@@ -1,0 +1,20 @@
+{
+    "mtApp": {
+        "tenantConfig" : {
+            "home": {
+                "title": "TenantConfigs",
+                "createLabel": "Create a new TenantConfig",
+                "createOrEditLabel": "Create or edit a TenantConfig"
+            },
+            "delete": {
+                "question": "Are you sure you want to delete TenantConfig {{ id }}?"
+            },
+            "detail": {
+                "title": "TenantConfig"
+            },
+            "url": "Url",
+            "username": "Username",
+            "password": "Password"
+        }
+    }
+}

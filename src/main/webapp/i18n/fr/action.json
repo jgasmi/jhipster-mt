@@ -1,0 +1,19 @@
+{
+    "mtApp": {
+        "action" : {
+            "home": {
+                "title": "Actions",
+                "createLabel": "Créer un nouveau Action",
+                "createOrEditLabel": "Créer ou éditer un Action"
+            },
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Action {{ id }} ?"
+            },
+            "detail": {
+                "title": "Action"
+            },
+            "Campaign": "Campaign"
+        }
+    }
+}
+

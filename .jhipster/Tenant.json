@@ -1,0 +1,42 @@
+{
+    "relationships": [
+        {
+            "relationshipId": 1,
+            "relationshipName": "TenantConfig",
+            "relationshipNameCapitalized": "TenantConfig",
+            "relationshipFieldName": "tenantConfig",
+            "otherEntityName": "tenantConfig",
+            "relationshipType": "one-to-one",
+            "otherEntityNameCapitalized": "TenantConfig",
+            "ownerSide": true
+        }
+    ],
+    "fields": [
+        {
+            "fieldId": 1,
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldNameCapitalized": "Name",
+            "fieldNameUnderscored": "name",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 2,
+            "fieldName": "isEnabled",
+            "fieldType": "Boolean",
+            "fieldNameCapitalized": "IsEnabled",
+            "fieldNameUnderscored": "is_enabled",
+            "fieldValidate": false
+        }
+    ],
+    "fieldsContainOwnerManyToMany": false,
+    "fieldsContainOneToMany": false,
+    "fieldsContainLocalDate": false,
+    "fieldsContainCustomTime": false,
+    "fieldsContainBigDecimal": false,
+    "fieldsContainDateTime": false,
+    "fieldsContainDate": false,
+    "changelogDate": "20150326160134",
+    "pagination": "no",
+    "validation": false
+}

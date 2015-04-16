@@ -1,0 +1,25 @@
+{
+    "relationships": [
+        {
+            "relationshipId": 1,
+            "relationshipName": "Campaign",
+            "relationshipNameCapitalized": "Campaign",
+            "relationshipFieldName": "campaign",
+            "otherEntityName": "campaign",
+            "relationshipType": "one-to-one",
+            "otherEntityNameCapitalized": "Campaign",
+            "ownerSide": true
+        }
+    ],
+    "fields": [],
+    "fieldsContainOwnerManyToMany": false,
+    "fieldsContainOneToMany": false,
+    "fieldsContainLocalDate": false,
+    "fieldsContainCustomTime": false,
+    "fieldsContainBigDecimal": false,
+    "fieldsContainDateTime": false,
+    "fieldsContainDate": false,
+    "changelogDate": "20150324081042",
+    "pagination": "no",
+    "validation": false
+}

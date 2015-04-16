@@ -1,0 +1,21 @@
+{
+    "mtApp": {
+        "tenantConfig" : {
+            "home": {
+                "title": "TenantConfigs",
+                "createLabel": "Créer un nouveau TenantConfig",
+                "createOrEditLabel": "Créer ou éditer un TenantConfig"
+            },
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le TenantConfig {{ id }} ?"
+            },
+            "detail": {
+                "title": "TenantConfig"
+            },
+            "url": "Url",
+            "username": "Username",
+            "password": "Password"
+        }
+    }
+}
+

@@ -1,0 +1,18 @@
+{
+    "App": {
+        "queue" : {
+            "home": {
+                "title": "Queues",
+                "createLabel": "Create a new Queue",
+                "createOrEditLabel": "Create or edit a Queue"
+            },
+            "delete": {
+                "question": "Are you sure you want to delete Queue {{ id }}?"
+            },
+            "detail": {
+                "title": "Queue"
+            },
+            "name": "Name"
+        }
+    }
+}

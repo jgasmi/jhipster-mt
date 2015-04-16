@@ -1,0 +1,19 @@
+{
+  "generator-jhipster": {
+    "baseName": "mt",
+    "packageName": "com.yjiky.mt",
+    "packageFolder": "com/yjiky/mt",
+    "authenticationType": "oauth2",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": "hazelcast",
+    "websocket": "spring-websocket",
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "prodDatabaseType": "postgresql",
+    "useCompass": false,
+    "buildTool": "maven",
+    "frontendBuilder": "grunt",
+    "javaVersion": "8",
+    "rememberMeKey": "1838d8aa9aee9c5241841a4ac252e5d52c75c112"
+  }
+}

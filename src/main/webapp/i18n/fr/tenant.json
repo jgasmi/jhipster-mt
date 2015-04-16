@@ -1,0 +1,21 @@
+{
+    "mtApp": {
+        "tenant" : {
+            "home": {
+                "title": "Tenants",
+                "createLabel": "Créer un nouveau Tenant",
+                "createOrEditLabel": "Créer ou éditer un Tenant"
+            },
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Tenant {{ id }} ?"
+            },
+            "detail": {
+                "title": "Tenant"
+            },
+            "name": "Name",
+            "isEnabled": "IsEnabled",
+            "TenantConfig": "TenantConfig"
+        }
+    }
+}
+

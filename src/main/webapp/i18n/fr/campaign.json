@@ -1,0 +1,19 @@
+{
+    "mtApp": {
+        "campaign" : {
+            "home": {
+                "title": "Campaigns",
+                "createLabel": "Créer un nouveau Campaign",
+                "createOrEditLabel": "Créer ou éditer un Campaign"
+            },
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Campaign {{ id }} ?"
+            },
+            "detail": {
+                "title": "Campaign"
+            },
+            "action": "Action"
+        }
+    }
+}
+
