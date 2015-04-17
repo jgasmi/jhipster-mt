@@ -1,4 +1,4 @@
-package com.yjiky.mt.config;
+package com.yjiky.mt.multitenancy;
 
 public interface ITenantAware {
 

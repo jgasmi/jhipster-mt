@@ -2,6 +2,7 @@ package com.yjiky.mt.security;
 
 import com.yjiky.mt.domain.Authority;
 import com.yjiky.mt.domain.User;
+import com.yjiky.mt.multitenancy.CustomUserDetails;
 import com.yjiky.mt.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +45,7 @@ public class UserDetailsService implements org.springframework.security.core.use
             List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
                     .map(authority -> new SimpleGrantedAuthority(authority.getName()))
                     .collect(Collectors.toList());
-            return new org.springframework.security.core.userdetails.User(lowercaseLogin,
-                    user.getPassword(),
-                    grantedAuthorities);
+            return new CustomUserDetails(userFromDatabase.get(), grantedAuthorities);
         }).orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database"));
     }
 }

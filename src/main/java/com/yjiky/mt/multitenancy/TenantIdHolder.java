@@ -1,4 +1,4 @@
-package com.yjiky.mt.config;
+package com.yjiky.mt.multitenancy;
 
 public class TenantIdHolder {
     private static final ThreadLocal<String> contextHolder = new ThreadLocal<String>();

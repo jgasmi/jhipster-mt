@@ -1,4 +1,4 @@
-package com.yjiky.mt.config;
+package com.yjiky.mt.multitenancy;
 
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.security.core.Authentication;
@@ -14,15 +14,13 @@ public class TenantIdentifierResolver implements CurrentTenantIdentifierResolver
         Authentication authentication = context.getAuthentication();
         String tenantId = ConnectionProviderFactory.DEFAULT_LANDLORD;
         if (authentication != null) {
-            if (authentication.getPrincipal() instanceof UserDetails) {
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                if (userDetails.getUsername().equals("admin"))
-                    tenantId = ConnectionProviderFactory.DEFAULT_LANDLORD;//userDetails.getUser().getMyTenantIdentifier();
-                else
-                    tenantId = "terre";
+            if (CustomUserDetails.class.isInstance(authentication.getPrincipal())) {
+                CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+                tenantId = userDetails.getUser().getTenant().getId()+"_"+userDetails.getUser().getTenant().getName();
+                ConnectionProviderFactory.getInstance().cacheTenant(userDetails.getUser().getTenant());
             }
         }
-        System.out.println("   tenantId-->  " + tenantId);
+        System.out.println(" tenantId -->  " + tenantId);
 
         return tenantId;
     }

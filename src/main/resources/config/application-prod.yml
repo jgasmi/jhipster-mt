@@ -7,7 +7,7 @@ spring:
     datasource:
         dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
         url:
-        databaseName: mt
+        databaseName: landlorddb
         serverName: localhost
         username: mt
         password:

@@ -1,10 +1,11 @@
-package com.yjiky.mt.config;
+package com.yjiky.mt.multitenancy;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.yjiky.mt.domain.Tenant;
 import com.yjiky.mt.domain.TenantConfig;
 import com.yjiky.mt.domain.util.UtilValidator;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.c3p0.internal.C3P0ConnectionProvider;
 import org.hibernate.cfg.Environment;
@@ -13,9 +14,14 @@ import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionProviderFactory implements ITenantAwareConnectionProviderFactory {
 
@@ -25,6 +31,7 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
 
     private static Map<Object, ConnectionProviderHolder> tenantIdToConnectionProviderHolderMap = null;
     private static Map<Object, ConnectionProvider> tenantIdToConnectionProviderMap = null;
+    private static Map<String, Tenant> tenantMap = new ConcurrentHashMap<>();
 
     private Map cfgSettings;
     private ConnectionProvider defaultConnectionProvider;
@@ -42,21 +49,21 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
         Preconditions.checkNotNull(tenant);
         C3P0ConnectionProvider dataSource = new C3P0ConnectionProvider();
         dataSource.injectServices(serviceRegistry);
-        TenantConfig tenantConfig = getTenantConfig(tenant);
-        dataSource.configure(getSettingsForTenant(cfgSettings, tenantConfig));
+        dataSource.configure(getSettingsForTenant(cfgSettings, tenant.getTenantConfig()));
 
-        ConnectionProviderHolder dataSourceHolder = new ConnectionProviderHolder(dataSource, tenantConfig.getUsername(), tenantConfig.getPassword());
+        ConnectionProviderHolder dataSourceHolder = new ConnectionProviderHolder(dataSource, tenant.getTenantConfig().getUsername(), tenant.getTenantConfig().getPassword());
         return dataSourceHolder;
     }
 
     private ConnectionProvider createLandlordConnectionProvider() {
         logger.debug("Going to create a brand new connection provider for landlord ");
-        C3P0ConnectionProvider dataSource = new C3P0ConnectionProvider();
-        dataSource.injectServices(serviceRegistry);
-        TenantConfig tenantConfig = getLandlordConfig();
-        dataSource.configure(getSettingsForTenant(cfgSettings, tenantConfig));
+        Map originalSettings = serviceRegistry.getService(ConfigurationService.class).getSettings();
 
-        return dataSource;
+        C3P0ConnectionProvider connectionProvider = new C3P0ConnectionProvider();
+        connectionProvider.injectServices(serviceRegistry);
+        connectionProvider.configure(getOriginalLandlordSettings(originalSettings));
+
+        return connectionProvider;
     }
 
     private Map getSettingsForTenant(Map cfgSettings, TenantConfig tenantConfig) {
@@ -89,29 +96,24 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
         return tenantSettings;
     }
 
+    private Map getOriginalLandlordSettings(Map originalSettings) {
+        Map landlordSettings = new HashMap();
+        HikariDataSource hikariDataSource = (HikariDataSource) originalSettings.get("hibernate.connection.datasource");
+        Properties properties = hikariDataSource.getDataSourceProperties();
 
-    TenantConfig getTenantConfig(Tenant tenant) {
-//        JdbcTemplate jdbcTemplate = getJdbcTemplate();
-//        Map<String, Object> tenantResult = jdbcTemplate.queryForMap("select * from tenant where tenantid = ?", tenant.getId());
-//        Map<String, Object> customisationResult = jdbcTemplate.queryForMap("select * from tenant_customisation_details where customisationId = ?", tenantResult.get("customisationId"));
-        TenantConfig tenantConfig = new TenantConfig();
-        tenantConfig.setId(2l);
-        tenantConfig.setUrl("jdbc:postgresql://localhost:5432/tenantdb");
-        tenantConfig.setUsername("postgres");
-        tenantConfig.setPassword("postgres");
-        return tenantConfig;
-    }
+        String driver = "org.postgresql.Driver";
 
-    TenantConfig getLandlordConfig() {
-//        JdbcTemplate jdbcTemplate = getJdbcTemplate();
-//        Map<String, Object> tenantResult = jdbcTemplate.queryForMap("select * from tenant where tenantid = ?", tenant.getId());
-//        Map<String, Object> customisationResult = jdbcTemplate.queryForMap("select * from tenant_customisation_details where customisationId = ?", tenantResult.get("customisationId"));
-        TenantConfig tenantConfig = new TenantConfig();
-        tenantConfig.setId(1l);
-        tenantConfig.setUrl("jdbc:postgresql://localhost:5432/jhmtdb");
-        tenantConfig.setUsername("postgres");
-        tenantConfig.setPassword("postgres");
-        return tenantConfig;
+        landlordSettings.remove(Environment.DRIVER);
+        landlordSettings.put(Environment.DRIVER, driver);
+        // TODO For now only a single dialect is supported for all the tenants
+        landlordSettings.remove(Environment.URL);
+        landlordSettings.put(Environment.URL, "jdbc:postgresql://" + properties.getProperty("serverName") + ":5432/" + properties.getProperty("databaseName"));
+        landlordSettings.remove(Environment.PASS);
+        landlordSettings.put(Environment.PASS, properties.getProperty("password"));
+        landlordSettings.remove(Environment.USER);
+        landlordSettings.put(Environment.USER, properties.getProperty("user"));
+
+        return landlordSettings;
     }
 
     @Override
@@ -134,25 +136,14 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
     }
 
     @Override
-    public Map<Object, ConnectionProviderHolder> bootstrapTenantConnectionProviders(String tenantId) {
+    public Map<Object, ConnectionProviderHolder> bootstrapTenantConnectionProviders(String tenantIdentifier) {
         Preconditions.checkNotNull(defaultConnectionProvider);
 
-//        JdbcTemplate jdbcTemplate = getJdbcTemplate();
-//        List<Tenant> allConfiguredTenants = jdbcTemplate.query("select * from tenant", new RowMapper<Tenant>() {
-//            @Override
-//            public Tenant mapRow(ResultSet rs, int rowNum) throws SQLException {
-//                Tenant tenant = new Tenant(rs.getString("tenantId"), rs.getString("tenantName"), rs.getBoolean("isEnabled"));
-//                return tenant.with(rs.getLong("customisationId"));
-//            }
-//        });
-        //TODO dummy tenants
-        Tenant tenant = new Tenant();
-        tenant.setId(3l);
-        tenant.setName("terre");
-        tenant.setIsEnabled(true);
+        Tenant tenant = resolveTenant(tenantIdentifier);
+
         ConnectionProviderHolder dataSourceHolder = createConnectionProviderHolder(tenant);
-        tenantIdToConnectionProviderHolderMap.put(tenant.getName(), dataSourceHolder);
-        tenantIdToConnectionProviderMap.put(tenant.getName(), dataSourceHolder.dataSource);
+        tenantIdToConnectionProviderHolderMap.put(tenantIdentifier, dataSourceHolder);
+        tenantIdToConnectionProviderMap.put(tenantIdentifier, dataSourceHolder.dataSource);
 
         return tenantIdToConnectionProviderHolderMap;
     }
@@ -178,5 +169,13 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
             bootstrapTenantConnectionProviders(tenantId);
         }
         return tenantIdToConnectionProviderHolderMap.get(tenantId);
+    }
+
+    public void cacheTenant(Tenant tenant) {
+        tenantMap.put(tenant.getId()+"_"+tenant.getName(), tenant);
+    }
+
+    public Tenant resolveTenant(String tenantIdentifier) {
+        return tenantMap.get(tenantIdentifier);
     }
 }

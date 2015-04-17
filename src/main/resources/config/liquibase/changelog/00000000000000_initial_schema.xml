@@ -34,6 +34,8 @@
             </column>
             <column name="lang_key" type="varchar(5)"/>
             <column name="activation_key" type="varchar(20)"/>
+            <column name="tenant_id" type="bigint"/>
+            <!-- Auditing Columns -->
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
@@ -84,6 +86,12 @@
                                  constraintName="fk_user_id"
                                  referencedColumnNames="id"
                                  referencedTableName="T_USER"/>
+
+        <addForeignKeyConstraint baseColumnNames="tenant_id"
+                                 baseTableName="T_USER"
+                                 constraintName="fk_user_tenant_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="T_TENANT"/>
 
         <loadData encoding="UTF-8"
                   file="config/liquibase/users.csv"
@@ -145,7 +153,7 @@
                                  referencedColumnNames="event_id"
                                  referencedTableName="T_PERSISTENT_AUDIT_EVENT"/>
     </changeSet>
-    
+
     <!-- Manage the OAuth authentication -->
     <changeSet id="2" author="jhipster">
         <createTable tableName="oauth_client_details">

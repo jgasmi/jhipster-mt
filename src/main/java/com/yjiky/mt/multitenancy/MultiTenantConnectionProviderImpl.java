@@ -1,4 +1,4 @@
-package com.yjiky.mt.config;
+package com.yjiky.mt.multitenancy;
 
 import org.hibernate.cfg.Environment;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
@@ -29,8 +29,8 @@ public class MultiTenantConnectionProviderImpl extends org.hibernate.engine.jdbc
     @Override
     protected ConnectionProvider selectConnectionProvider(String tenantIdentifier) {
         ConnectionProviderHolder dataSourceHolder = ConnectionProviderFactory.getInstance().resolveConnectionProviderForTenant(tenantIdentifier);
-        properties.setProperty(Environment.USER,dataSourceHolder.user);
-        properties.setProperty(Environment.PASS,dataSourceHolder.password);
+        //properties.setProperty(Environment.USER,dataSourceHolder.user);
+        //properties.setProperty(Environment.PASS,dataSourceHolder.password);
 
         return dataSourceHolder.dataSource;
     }

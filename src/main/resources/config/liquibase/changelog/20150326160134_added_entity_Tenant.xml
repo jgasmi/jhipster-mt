@@ -19,12 +19,16 @@
             <column name="is_enabled" type="bit"/>
             <column name="tenantconfig_id" type="bigint"/>
         </createTable>
-        
+
         <addForeignKeyConstraint baseColumnNames="tenantconfig_id"
                                  baseTableName="T_TENANT"
                                  constraintName="fk_tenant_tenantconfig_id"
                                  referencedColumnNames="id"
                                  referencedTableName="T_TENANTCONFIG"/>
 
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/tenants.csv"
+                  separator=";"
+                  tableName="T_TENANT"/>
     </changeSet>
 </databaseChangeLog>

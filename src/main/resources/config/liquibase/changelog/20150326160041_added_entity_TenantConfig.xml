@@ -19,6 +19,10 @@
             <column name="username" type="varchar(255)"/>
             <column name="password" type="varchar(255)"/>
         </createTable>
-        
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/tenantconfigs.csv"
+                  separator=";"
+                  tableName="T_TENANTCONFIG"/>
     </changeSet>
 </databaseChangeLog>
