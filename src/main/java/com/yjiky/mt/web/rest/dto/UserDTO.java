@@ -31,13 +31,15 @@ public class UserDTO {
     @Size(min = 2, max = 5)
     private String langKey;
 
+    private String tenant;
+
     private List<String> roles;
 
     public UserDTO() {
     }
 
     public UserDTO(String login, String password, String firstName, String lastName, String email, String langKey,
-                   List<String> roles) {
+                   List<String> roles, String tenant) {
         this.login = login;
         this.password = password;
         this.firstName = firstName;
@@ -45,6 +47,11 @@ public class UserDTO {
         this.email = email;
         this.langKey = langKey;
         this.roles = roles;
+        this.tenant = tenant;
+    }
+
+    public String getTenant() {
+        return tenant;
     }
 
     public String getPassword() {

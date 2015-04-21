@@ -120,7 +120,7 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
     public Map<Object, ConnectionProviderHolder> bootstrapLandlordConnectionProviders(ServiceRegistryImplementor serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
         this.cfgSettings = serviceRegistry.getService(ConfigurationService.class).getSettings();
-        //TODO GET LANDLORD CONNECTION SETTINGS
+
         Map<Object, ConnectionProviderHolder> tenantIdToConnectionProviderHolderMap = Maps.newHashMap();
         Map<Object, ConnectionProvider> tenantIdToConnectionProviderMap = Maps.newHashMap();
 
