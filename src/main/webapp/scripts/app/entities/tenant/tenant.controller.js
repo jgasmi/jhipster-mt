@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('mtApp')
-    .controller('TenantController', function ($scope, Tenant, TenantConfig) {
+    .controller('TenantController', function ($scope, Tenant, DbType) {
         $scope.tenants = [];
-        $scope.tenantconfigs = TenantConfig.query();
+        $scope.dbtypes = DbType.query();
         $scope.loadAll = function() {
             Tenant.query(function(result) {
                $scope.tenants = result;
@@ -44,7 +44,7 @@ angular.module('mtApp')
         };
 
         $scope.clear = function () {
-            $scope.tenant = {name: null, isEnabled: null, id: null};
+            $scope.tenant = {tenantName: null, dbHost: null, dbPort: null, dbName: null, dbUserName: null, dbPassword: null, id: null};
             $scope.editForm.$setPristine();
             $scope.editForm.$setUntouched();
         };

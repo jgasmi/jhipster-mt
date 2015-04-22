@@ -1,0 +1,42 @@
+{
+    "relationships": [],
+    "fields": [
+        {
+            "fieldId": 1,
+            "fieldName": "dbType",
+            "fieldType": "String",
+            "fieldNameCapitalized": "DbType",
+            "fieldNameUnderscored": "db_type",
+            "fieldInJavaBeanMethod": "DbType",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 2,
+            "fieldName": "driver",
+            "fieldType": "String",
+            "fieldNameCapitalized": "Driver",
+            "fieldNameUnderscored": "driver",
+            "fieldInJavaBeanMethod": "Driver",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 3,
+            "fieldName": "url",
+            "fieldType": "String",
+            "fieldNameCapitalized": "Url",
+            "fieldNameUnderscored": "url",
+            "fieldInJavaBeanMethod": "Url",
+            "fieldValidate": false
+        }
+    ],
+    "fieldsContainOwnerManyToMany": false,
+    "fieldsContainOneToMany": false,
+    "fieldsContainLocalDate": false,
+    "fieldsContainCustomTime": false,
+    "fieldsContainBigDecimal": false,
+    "fieldsContainDateTime": false,
+    "fieldsContainDate": false,
+    "changelogDate": "20150422093500",
+    "pagination": "no",
+    "validation": false
+}

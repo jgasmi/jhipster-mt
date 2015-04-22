@@ -22,14 +22,26 @@ public class Tenant implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "tenant_name")
+    private String tenantName;
 
-    @Column(name = "is_enabled")
-    private Boolean isEnabled;
+    @Column(name = "db_host")
+    private String dbHost;
 
-    @OneToOne
-    private TenantConfig tenantConfig;
+    @Column(name = "db_port")
+    private Integer dbPort;
+
+    @Column(name = "db_name")
+    private String dbName;
+
+    @Column(name = "db_user_name")
+    private String dbUserName;
+
+    @Column(name = "db_password")
+    private String dbPassword;
+
+    @ManyToOne
+    private DbType dbtype;
 
     public Long getId() {
         return id;
@@ -39,28 +51,60 @@ public class Tenant implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTenantName() {
+        return tenantName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTenantName(String tenantName) {
+        this.tenantName = tenantName;
     }
 
-    public Boolean getIsEnabled() {
-        return isEnabled;
+    public String getDbHost() {
+        return dbHost;
     }
 
-    public void setIsEnabled(Boolean isEnabled) {
-        this.isEnabled = isEnabled;
+    public void setDbHost(String dbHost) {
+        this.dbHost = dbHost;
     }
 
-    public TenantConfig getTenantConfig() {
-        return tenantConfig;
+    public Integer getDbPort() {
+        return dbPort;
     }
 
-    public void setTenantConfig(TenantConfig tenantConfig) {
-        this.tenantConfig = tenantConfig;
+    public void setDbPort(Integer dbPort) {
+        this.dbPort = dbPort;
+    }
+
+    public String getDbName() {
+        return dbName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
+
+    public String getDbUserName() {
+        return dbUserName;
+    }
+
+    public void setDbUserName(String dbUserName) {
+        this.dbUserName = dbUserName;
+    }
+
+    public String getDbPassword() {
+        return dbPassword;
+    }
+
+    public void setDbPassword(String dbPassword) {
+        this.dbPassword = dbPassword;
+    }
+
+    public DbType getDbtype() {
+        return dbtype;
+    }
+
+    public void setDbtype(DbType dbType) {
+        this.dbtype = dbType;
     }
 
     @Override
@@ -88,8 +132,12 @@ public class Tenant implements Serializable {
     public String toString() {
         return "Tenant{" +
                 "id=" + id +
-                ", name='" + name + "'" +
-                ", isEnabled='" + isEnabled + "'" +
+                ", tenantName='" + tenantName + "'" +
+                ", dbHost='" + dbHost + "'" +
+                ", dbPort='" + dbPort + "'" +
+                ", dbName='" + dbName + "'" +
+                ", dbUserName='" + dbUserName + "'" +
+                ", dbPassword='" + dbPassword + "'" +
                 '}';
     }
 }
