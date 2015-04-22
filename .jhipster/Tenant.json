@@ -2,26 +2,72 @@
     "relationships": [
         {
             "relationshipId": 1,
-            "relationshipName": "TenantConfig",
-            "relationshipNameCapitalized": "TenantConfig",
-            "relationshipFieldName": "tenantConfig",
-            "otherEntityName": "tenantConfig",
-            "relationshipType": "one-to-one",
-            "otherEntityNameCapitalized": "TenantConfig",
-            "ownerSide": true
+            "relationshipName": "dbtype",
+            "relationshipNameCapitalized": "Dbtype",
+            "relationshipFieldName": "dbtype",
+            "otherEntityName": "dbType",
+            "relationshipType": "many-to-one",
+            "otherEntityNameCapitalized": "DbType",
+            "otherEntityField": "dbType"
         }
     ],
     "fields": [
         {
             "fieldId": 1,
-            "fieldName": "name",
+            "fieldName": "tenantName",
             "fieldType": "String",
-            "fieldNameCapitalized": "Name",
-            "fieldNameUnderscored": "name",
+            "fieldNameCapitalized": "TenantName",
+            "fieldNameUnderscored": "tenant_name",
+            "fieldInJavaBeanMethod": "TenantName",
             "fieldValidate": false
         },
         {
             "fieldId": 2,
+            "fieldName": "dbHost",
+            "fieldType": "String",
+            "fieldNameCapitalized": "DbHost",
+            "fieldNameUnderscored": "db_host",
+            "fieldInJavaBeanMethod": "DbHost",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 3,
+            "fieldName": "dbPort",
+            "fieldType": "Integer",
+            "fieldNameCapitalized": "DbPort",
+            "fieldNameUnderscored": "db_port",
+            "fieldInJavaBeanMethod": "DbPort",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 4,
+            "fieldName": "dbName",
+            "fieldType": "String",
+            "fieldNameCapitalized": "DbName",
+            "fieldNameUnderscored": "db_name",
+            "fieldInJavaBeanMethod": "DbName",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 5,
+            "fieldName": "dbUserName",
+            "fieldType": "String",
+            "fieldNameCapitalized": "DbUserName",
+            "fieldNameUnderscored": "db_user_name",
+            "fieldInJavaBeanMethod": "DbUserName",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 6,
+            "fieldName": "dbPassword",
+            "fieldType": "String",
+            "fieldNameCapitalized": "DbPassword",
+            "fieldNameUnderscored": "db_password",
+            "fieldInJavaBeanMethod": "DbPassword",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 7,
             "fieldName": "isEnabled",
             "fieldType": "Boolean",
             "fieldNameCapitalized": "IsEnabled",
@@ -36,7 +82,7 @@
     "fieldsContainBigDecimal": false,
     "fieldsContainDateTime": false,
     "fieldsContainDate": false,
-    "changelogDate": "20150326160134",
+    "changelogDate": "20150422093932",
     "pagination": "no",
     "validation": false
 }

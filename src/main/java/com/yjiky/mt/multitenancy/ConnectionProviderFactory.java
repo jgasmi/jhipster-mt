@@ -3,7 +3,6 @@ package com.yjiky.mt.multitenancy;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.yjiky.mt.domain.Tenant;
-import com.yjiky.mt.domain.TenantConfig;
 import com.yjiky.mt.domain.util.UtilValidator;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -14,10 +13,8 @@ import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.sql.DataSource;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -49,9 +46,9 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
         Preconditions.checkNotNull(tenant);
         C3P0ConnectionProvider dataSource = new C3P0ConnectionProvider();
         dataSource.injectServices(serviceRegistry);
-        dataSource.configure(getSettingsForTenant(cfgSettings, tenant.getTenantConfig()));
+        dataSource.configure(getSettingsForTenant(cfgSettings, tenant));
 
-        ConnectionProviderHolder dataSourceHolder = new ConnectionProviderHolder(dataSource, tenant.getTenantConfig().getUsername(), tenant.getTenantConfig().getPassword());
+        ConnectionProviderHolder dataSourceHolder = new ConnectionProviderHolder(dataSource, tenant.getDbName(), tenant.getDbUserName(), tenant.getDbPassword());
         return dataSourceHolder;
     }
 
@@ -66,14 +63,14 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
         return connectionProvider;
     }
 
-    private Map getSettingsForTenant(Map cfgSettings, TenantConfig tenantConfig) {
+    private Map getSettingsForTenant(Map cfgSettings, Tenant tenant) {
         Map tenantSettings = new HashMap();
         tenantSettings.putAll(cfgSettings);
 
-        String url = tenantConfig.getUrl();
+        String url = getTenantDbUrl(tenant);
         String driver = "org.postgresql.Driver";
-        String password = tenantConfig.getPassword();
-        String username = tenantConfig.getUsername();
+        String password = tenant.getDbPassword();
+        String username = tenant.getDbUserName();
 
         if (StringUtils.isBlank(url)) {
             //throw new UnknownTenantException("The tenant '" + tenantIdentifier + "' is not known");
@@ -127,7 +124,7 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
         if (defaultConnectionProvider == null)
             defaultConnectionProvider = createLandlordConnectionProvider();
 
-        ConnectionProviderHolder defaultConnectionProviderHolder = new ConnectionProviderHolder(defaultConnectionProvider, "root", "");
+        ConnectionProviderHolder defaultConnectionProviderHolder = new ConnectionProviderHolder(defaultConnectionProvider, "", "root", "");
         tenantIdToConnectionProviderHolderMap.put(DEFAULT_LANDLORD, defaultConnectionProviderHolder);
         tenantIdToConnectionProviderMap.put(DEFAULT_LANDLORD, defaultConnectionProvider);
         this.tenantIdToConnectionProviderHolderMap = tenantIdToConnectionProviderHolderMap;
@@ -172,10 +169,14 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
     }
 
     public void cacheTenant(Tenant tenant) {
-        tenantMap.put(tenant.getId()+"_"+tenant.getName(), tenant);
+        tenantMap.put(tenant.getId()+"_"+tenant.getTenantName(), tenant);
     }
 
     public Tenant resolveTenant(String tenantIdentifier) {
         return tenantMap.get(tenantIdentifier);
+    }
+
+    protected static String getTenantDbUrl(Tenant tenant) {
+        return "jdbc:postgresql://" + tenant.getDbHost() + ":"+tenant.getDbPort()+"/" + tenant.getDbName();
     }
 }

@@ -1,0 +1,45 @@
+# Disable the spring security default configuration from spring-boot-actuator
+management.security.enabled: true
+security.basic.enabled: false
+
+# Disable Jolokia - An http/json bridge for remote JMX access
+endpoints.jolokia.enabled: false
+
+# security configuration (this key should be unique for your application, and kept secret)
+jhipster.security.rememberme.key: <%= rememberMeKey %>
+
+async:
+    corePoolSize: 2
+    maxPoolSize: 50
+    queueCapacity: 10000
+
+spring:
+    mail:
+        host: localhost
+        port: 25
+        user:
+        password:
+        protocol: smtp
+        tls: false
+        auth: false
+        from: <%= baseName %>@localhost
+
+    messageSource:
+        cacheSeconds: 1<% if (authenticationType == 'oauth2' || authenticationType == 'xauth') { %>
+
+authentication:<% if (authenticationType == 'xauth') { %>
+    xauth:
+        secret: myXAuthSecret<% } %><% if (authenticationType == 'oauth2') { %>
+    oauth:
+        clientid: <%= baseName %>app
+        secret: mySecretOAuthSecret<% } %>
+        # Token is valid 30 minutes
+        tokenValidityInSeconds: 1800<% } %>
+
+swagger:
+    title: <%=baseName%> API
+    description: <%=baseName%> applications and beyond!
+    termsOfServiceUrl: http://jhipster.github.io/
+    contact:
+    license: Apache 2.0
+    licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.html

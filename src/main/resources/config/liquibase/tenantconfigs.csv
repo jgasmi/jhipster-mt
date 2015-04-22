@@ -1,3 +1,0 @@
-id;url;username;password
-1;jdbc:postgresql://localhost:5432/landlorddb;postgres;postgres
-2;jdbc:postgresql://localhost:5432/tenantdb;postgres;postgres

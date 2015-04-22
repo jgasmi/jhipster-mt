@@ -4,8 +4,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="classpath:config/liquibase/changelog/20150326160041_added_entity_TenantConfig.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20150326160134_added_entity_Tenant.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20150422093500_added_entity_DbType.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20150422093932_added_entity_Tenant.xml" relativeToChangelogFile="false"/>
 
     <include file="classpath:config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20150324080945_added_entity_Campaign.xml" relativeToChangelogFile="false"/>

@@ -2,14 +2,11 @@ package com.yjiky.mt.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.yjiky.mt.domain.Tenant;
-import com.yjiky.mt.domain.TenantConfig;
 import com.yjiky.mt.multitenancy.ConnectionProviderFactory;
 import com.yjiky.mt.multitenancy.ConnectionProviderHolder;
 import com.yjiky.mt.multitenancy.SpringLiquibaseUpdater;
-import com.yjiky.mt.repository.TenantConfigRepository;
 import com.yjiky.mt.repository.TenantRepository;
 import liquibase.exception.LiquibaseException;
-import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +34,6 @@ public class TenantResource {
     @Inject
     private TenantRepository tenantRepository;
 
-    @Inject
-    private TenantConfigRepository tenantConfigRepository;
-
     @Autowired
     private ResourceLoader resourceLoader;
 
@@ -57,17 +51,16 @@ public class TenantResource {
         }
         tenantRepository.save(tenant);
 
-        List<TenantConfig> configs = tenantConfigRepository.findAll();
-        tenant.setTenantConfig(configs.get(configs.size()-1));
-
         ConnectionProviderFactory.getInstance().cacheTenant(tenant);
-        ConnectionProviderHolder connectionProviderHolder = ConnectionProviderFactory.getInstance().resolveConnectionProviderForTenant(tenant.getId()+"_"+tenant.getName());
+        ConnectionProviderHolder connectionProviderHolder = ConnectionProviderFactory.getInstance().resolveConnectionProviderForTenant(tenant.getId()+"_"+tenant.getTenantName());
 
 
         //Liquibase DB Generation
-        SpringLiquibaseUpdater liquibaseUpdater = new SpringLiquibaseUpdater(connectionProviderHolder.dataSource, "classpath:config/liquibase/master.xml", resourceLoader);
+        SpringLiquibaseUpdater liquibaseUpdater = new SpringLiquibaseUpdater(connectionProviderHolder, "classpath:config/liquibase/master.xml", resourceLoader, true);
         try {
             liquibaseUpdater.update();
+
+
         } catch (LiquibaseException e) {
             e.printStackTrace();
         }

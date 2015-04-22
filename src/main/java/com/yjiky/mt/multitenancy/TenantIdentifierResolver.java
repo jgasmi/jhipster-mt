@@ -16,7 +16,7 @@ public class TenantIdentifierResolver implements CurrentTenantIdentifierResolver
         if (authentication != null) {
             if (CustomUserDetails.class.isInstance(authentication.getPrincipal())) {
                 CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-                tenantId = userDetails.getUser().getTenant().getId()+"_"+userDetails.getUser().getTenant().getName();
+                tenantId = userDetails.getUser().getTenant().getId()+"_"+userDetails.getUser().getTenant().getTenantName();
                 ConnectionProviderFactory.getInstance().cacheTenant(userDetails.getUser().getTenant());
             }
         }

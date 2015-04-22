@@ -12,9 +12,13 @@
             "detail": {
                 "title": "Tenant"
             },
-            "name": "Name",
-            "isEnabled": "IsEnabled",
-            "TenantConfig": "TenantConfig"
+            "tenantName": "TenantName",
+            "dbHost": "DbHost",
+            "dbPort": "DbPort",
+            "dbName": "DbName",
+            "dbUserName": "DbUserName",
+            "dbPassword": "DbPassword",
+            "dbtype": "dbtype"
         }
     }
 }

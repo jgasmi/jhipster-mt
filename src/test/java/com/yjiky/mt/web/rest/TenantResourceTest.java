@@ -7,6 +7,7 @@ import com.yjiky.mt.repository.TenantRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -37,11 +38,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @IntegrationTest
 public class TenantResourceTest {
 
-    private static final String DEFAULT_NAME = "SAMPLE_TEXT";
-    private static final String UPDATED_NAME = "UPDATED_TEXT";
+    private static final String DEFAULT_TENANT_NAME = "SAMPLE_TEXT";
+    private static final String UPDATED_TENANT_NAME = "UPDATED_TEXT";
+    private static final String DEFAULT_DB_HOST = "SAMPLE_TEXT";
+    private static final String UPDATED_DB_HOST = "UPDATED_TEXT";
 
-    private static final Boolean DEFAULT_IS_ENABLED = false;
-    private static final Boolean UPDATED_IS_ENABLED = true;
+    private static final Integer DEFAULT_DB_PORT = 0;
+    private static final Integer UPDATED_DB_PORT = 1;
+    private static final String DEFAULT_DB_NAME = "SAMPLE_TEXT";
+    private static final String UPDATED_DB_NAME = "UPDATED_TEXT";
+    private static final String DEFAULT_DB_USER_NAME = "SAMPLE_TEXT";
+    private static final String UPDATED_DB_USER_NAME = "UPDATED_TEXT";
+    private static final String DEFAULT_DB_PASSWORD = "SAMPLE_TEXT";
+    private static final String UPDATED_DB_PASSWORD = "UPDATED_TEXT";
 
     @Inject
     private TenantRepository tenantRepository;
@@ -61,15 +70,18 @@ public class TenantResourceTest {
     @Before
     public void initTest() {
         tenant = new Tenant();
-        tenant.setName(DEFAULT_NAME);
-        tenant.setIsEnabled(DEFAULT_IS_ENABLED);
+        tenant.setTenantName(DEFAULT_TENANT_NAME);
+        tenant.setDbHost(DEFAULT_DB_HOST);
+        tenant.setDbPort(DEFAULT_DB_PORT);
+        tenant.setDbName(DEFAULT_DB_NAME);
+        tenant.setDbUserName(DEFAULT_DB_USER_NAME);
+        tenant.setDbPassword(DEFAULT_DB_PASSWORD);
     }
 
     @Test
     @Transactional
     public void createTenant() throws Exception {
-        // Validate the database is empty
-        assertThat(tenantRepository.findAll()).hasSize(0);
+        int databaseSizeBeforeCreate = tenantRepository.findAll().size();
 
         // Create the Tenant
         restTenantMockMvc.perform(post("/api/tenants")
@@ -79,10 +91,14 @@ public class TenantResourceTest {
 
         // Validate the Tenant in the database
         List<Tenant> tenants = tenantRepository.findAll();
-        assertThat(tenants).hasSize(1);
-        Tenant testTenant = tenants.iterator().next();
-        assertThat(testTenant.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testTenant.getIsEnabled()).isEqualTo(DEFAULT_IS_ENABLED);
+        assertThat(tenants).hasSize(databaseSizeBeforeCreate + 1);
+        Tenant testTenant = tenants.get(tenants.size() - 1);
+        assertThat(testTenant.getTenantName()).isEqualTo(DEFAULT_TENANT_NAME);
+        assertThat(testTenant.getDbHost()).isEqualTo(DEFAULT_DB_HOST);
+        assertThat(testTenant.getDbPort()).isEqualTo(DEFAULT_DB_PORT);
+        assertThat(testTenant.getDbName()).isEqualTo(DEFAULT_DB_NAME);
+        assertThat(testTenant.getDbUserName()).isEqualTo(DEFAULT_DB_USER_NAME);
+        assertThat(testTenant.getDbPassword()).isEqualTo(DEFAULT_DB_PASSWORD);
     }
 
     @Test
@@ -95,9 +111,13 @@ public class TenantResourceTest {
         restTenantMockMvc.perform(get("/api/tenants"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].id").value(tenant.getId().intValue()))
-                .andExpect(jsonPath("$.[0].name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.[0].isEnabled").value(DEFAULT_IS_ENABLED.booleanValue()));
+                .andExpect(jsonPath("$.[*].id").value(hasItem(tenant.getId().intValue())))
+                .andExpect(jsonPath("$.[*].tenantName").value(hasItem(DEFAULT_TENANT_NAME.toString())))
+                .andExpect(jsonPath("$.[*].dbHost").value(hasItem(DEFAULT_DB_HOST.toString())))
+                .andExpect(jsonPath("$.[*].dbPort").value(hasItem(DEFAULT_DB_PORT)))
+                .andExpect(jsonPath("$.[*].dbName").value(hasItem(DEFAULT_DB_NAME.toString())))
+                .andExpect(jsonPath("$.[*].dbUserName").value(hasItem(DEFAULT_DB_USER_NAME.toString())))
+                .andExpect(jsonPath("$.[*].dbPassword").value(hasItem(DEFAULT_DB_PASSWORD.toString())));
     }
 
     @Test
@@ -111,15 +131,19 @@ public class TenantResourceTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(tenant.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.isEnabled").value(DEFAULT_IS_ENABLED.booleanValue()));
+            .andExpect(jsonPath("$.tenantName").value(DEFAULT_TENANT_NAME.toString()))
+            .andExpect(jsonPath("$.dbHost").value(DEFAULT_DB_HOST.toString()))
+            .andExpect(jsonPath("$.dbPort").value(DEFAULT_DB_PORT))
+            .andExpect(jsonPath("$.dbName").value(DEFAULT_DB_NAME.toString()))
+            .andExpect(jsonPath("$.dbUserName").value(DEFAULT_DB_USER_NAME.toString()))
+            .andExpect(jsonPath("$.dbPassword").value(DEFAULT_DB_PASSWORD.toString()));
     }
 
     @Test
     @Transactional
     public void getNonExistingTenant() throws Exception {
         // Get the tenant
-        restTenantMockMvc.perform(get("/api/tenants/{id}", 1L))
+        restTenantMockMvc.perform(get("/api/tenants/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -128,10 +152,16 @@ public class TenantResourceTest {
     public void updateTenant() throws Exception {
         // Initialize the database
         tenantRepository.saveAndFlush(tenant);
+		
+		int databaseSizeBeforeUpdate = tenantRepository.findAll().size();
 
         // Update the tenant
-        tenant.setName(UPDATED_NAME);
-        tenant.setIsEnabled(UPDATED_IS_ENABLED);
+        tenant.setTenantName(UPDATED_TENANT_NAME);
+        tenant.setDbHost(UPDATED_DB_HOST);
+        tenant.setDbPort(UPDATED_DB_PORT);
+        tenant.setDbName(UPDATED_DB_NAME);
+        tenant.setDbUserName(UPDATED_DB_USER_NAME);
+        tenant.setDbPassword(UPDATED_DB_PASSWORD);
         restTenantMockMvc.perform(put("/api/tenants")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(tenant)))
@@ -139,10 +169,14 @@ public class TenantResourceTest {
 
         // Validate the Tenant in the database
         List<Tenant> tenants = tenantRepository.findAll();
-        assertThat(tenants).hasSize(1);
-        Tenant testTenant = tenants.iterator().next();
-        assertThat(testTenant.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testTenant.getIsEnabled()).isEqualTo(UPDATED_IS_ENABLED);
+        assertThat(tenants).hasSize(databaseSizeBeforeUpdate);
+        Tenant testTenant = tenants.get(tenants.size() - 1);
+        assertThat(testTenant.getTenantName()).isEqualTo(UPDATED_TENANT_NAME);
+        assertThat(testTenant.getDbHost()).isEqualTo(UPDATED_DB_HOST);
+        assertThat(testTenant.getDbPort()).isEqualTo(UPDATED_DB_PORT);
+        assertThat(testTenant.getDbName()).isEqualTo(UPDATED_DB_NAME);
+        assertThat(testTenant.getDbUserName()).isEqualTo(UPDATED_DB_USER_NAME);
+        assertThat(testTenant.getDbPassword()).isEqualTo(UPDATED_DB_PASSWORD);
     }
 
     @Test
@@ -150,6 +184,8 @@ public class TenantResourceTest {
     public void deleteTenant() throws Exception {
         // Initialize the database
         tenantRepository.saveAndFlush(tenant);
+		
+		int databaseSizeBeforeDelete = tenantRepository.findAll().size();
 
         // Get the tenant
         restTenantMockMvc.perform(delete("/api/tenants/{id}", tenant.getId())
@@ -158,6 +194,6 @@ public class TenantResourceTest {
 
         // Validate the database is empty
         List<Tenant> tenants = tenantRepository.findAll();
-        assertThat(tenants).hasSize(0);
+        assertThat(tenants).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

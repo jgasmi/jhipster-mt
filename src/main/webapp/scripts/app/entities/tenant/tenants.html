@@ -24,18 +24,47 @@
                         </div>
 
                         <div class="form-group">
-                            <label translate="mtApp.tenant.name">Name</label>
-                            <input type="text" class="form-control" name="name"
-                                   ng-model="tenant.name">
+                            <label translate="mtApp.tenant.tenantName">TenantName</label>
+                            <input type="text" class="form-control" name="tenantName"
+                                   ng-model="tenant.tenantName">
 
                         </div>
                         <div class="form-group">
-                            <label translate="mtApp.tenant.isEnabled">IsEnabled</label>
-                            <input type="checkbox" class="form-control" name="isEnabled"
-                                   ng-model="tenant.isEnabled">
+                            <label translate="mtApp.tenant.dbHost">DbHost</label>
+                            <input type="text" class="form-control" name="dbHost"
+                                   ng-model="tenant.dbHost">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="mtApp.tenant.dbPort">DbPort</label>
+                            <input type="number" class="form-control" name="dbPort"
+                                   ng-model="tenant.dbPort">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="mtApp.tenant.dbName">DbName</label>
+                            <input type="text" class="form-control" name="dbName"
+                                   ng-model="tenant.dbName">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="mtApp.tenant.dbUserName">DbUserName</label>
+                            <input type="text" class="form-control" name="dbUserName"
+                                   ng-model="tenant.dbUserName">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="mtApp.tenant.dbPassword">DbPassword</label>
+                            <input type="text" class="form-control" name="dbPassword"
+                                   ng-model="tenant.dbPassword">
 
                         </div>
 
+                        <div class="form-group">
+                            <label translate="mtApp.tenant.dbtype">dbtype</label>
+                            <select class="form-control" name="dbtype" ng-model="tenant.dbtype.id" ng-options="dbType.id as dbType.dbType for dbType in dbtypes">
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
@@ -80,16 +109,26 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th translate="mtApp.tenant.name">Name</th>
-                    <th translate="mtApp.tenant.isEnabled">IsEnabled</th>
+                    <th translate="mtApp.tenant.tenantName">TenantName</th>
+                    <th translate="mtApp.tenant.dbHost">DbHost</th>
+                    <th translate="mtApp.tenant.dbPort">DbPort</th>
+                    <th translate="mtApp.tenant.dbName">DbName</th>
+                    <th translate="mtApp.tenant.dbUserName">DbUserName</th>
+                    <th translate="mtApp.tenant.dbPassword">DbPassword</th>
+                    <th translate="mtApp.tenant.dbtype">dbtype</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="tenant in tenants">
                     <td><a ui-sref="tenantDetail({id:tenant.id})">{{tenant.id}}</a></td>
-                    <td>{{tenant.name}}</td>
-                    <td>{{tenant.isEnabled}}</td>
+                    <td>{{tenant.tenantName}}</td>
+                    <td>{{tenant.dbHost}}</td>
+                    <td>{{tenant.dbPort}}</td>
+                    <td>{{tenant.dbName}}</td>
+                    <td>{{tenant.dbUserName}}</td>
+                    <td>{{tenant.dbPassword}}</td>
+                    <td>{{tenant.dbtype.dbType}}</td>
                     <td>
                         <button type="submit"
                                 ui-sref="tenantDetail({id:tenant.id})"

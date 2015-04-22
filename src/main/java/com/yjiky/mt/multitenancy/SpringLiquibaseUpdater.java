@@ -8,24 +8,20 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ResourceAccessor;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import javax.annotation.PostConstruct;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SpringLiquibaseUpdater {
     private Logger logger = LoggerFactory.getLogger(SpringLiquibaseUpdater.class.getName());
@@ -60,7 +56,7 @@ public class SpringLiquibaseUpdater {
 
     private ResourceLoader resourceLoader;
 
-    private final ConnectionProvider connectionProvider;
+    private final ConnectionProviderHolder connectionProviderHolder;
 
     private final String changeLog;
 
@@ -75,11 +71,14 @@ public class SpringLiquibaseUpdater {
     private String changeLogTableName;
     private String changeLogLockTableName;
 
-    public SpringLiquibaseUpdater(ConnectionProvider connectionProvider, String changeLog, ResourceLoader resourceLoader) {
+    private boolean isNewTenant = false;
+
+    public SpringLiquibaseUpdater(ConnectionProviderHolder connectionProviderHolder, String changeLog, ResourceLoader resourceLoader, boolean isNewTenant) {
         super();
-        this.connectionProvider = connectionProvider;
+        this.connectionProviderHolder = connectionProviderHolder;
         this.changeLog = changeLog;
         this.resourceLoader = resourceLoader;
+        this.isNewTenant = isNewTenant;
     }
 
     public boolean isDropFirst() {
@@ -95,7 +94,7 @@ public class SpringLiquibaseUpdater {
         String name = "unknown";
         try {
             connection = getConnectionProvider().getConnection();
-            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connectionProvider.getConnection()));
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(getConnectionProvider().getConnection()));
             name = database.getDatabaseProductName();
         } catch (SQLException e) {
             throw new DatabaseException(e);
@@ -120,7 +119,7 @@ public class SpringLiquibaseUpdater {
      * @return
      */
     private ConnectionProvider getConnectionProvider() {
-        return connectionProvider;
+        return connectionProviderHolder.dataSource;
     }
 
     /**
@@ -152,21 +151,25 @@ public class SpringLiquibaseUpdater {
      * Executed automatically when the bean is initialized.
      */
     public void update() throws LiquibaseException {
-        Connection c = null;
+        Connection connection = null;
         Liquibase liquibase = null;
         try {
-            c = getConnectionProvider().getConnection();
-            liquibase = createLiquibase(c);
+            connection = getConnectionProvider().getConnection();
+            if (isNewTenant) {
+                PreparedStatement statement = connection.prepareStatement("CREATE DATABASE IF NOT EXISTS " + connectionProviderHolder.dbName);
+                statement.execute();
+            }
+            liquibase = createLiquibase(connection);
             liquibase.update("development, production");
         } catch (SQLException e) {
             throw new DatabaseException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            if (c != null) {
+            if (connection != null) {
                 try {
-                    c.rollback();
-                    c.close();
+                    connection.rollback();
+                    connection.close();
                 } catch (SQLException e) {
                     //nothing to do
                 }

@@ -1,0 +1,2 @@
+id;db_type;driver;url
+1;PostgreSQL;org.postgresql.Driver;jdbc:postgresql://
