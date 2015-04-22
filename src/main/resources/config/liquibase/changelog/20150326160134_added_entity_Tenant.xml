@@ -27,7 +27,7 @@
                                  referencedTableName="T_TENANTCONFIG"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/tenants.csv"
+                  file="classpath:config/liquibase/tenants.csv"
                   separator=";"
                   tableName="T_TENANT"/>
     </changeSet>

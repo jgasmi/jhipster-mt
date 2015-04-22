@@ -21,7 +21,7 @@
         </createTable>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/tenantconfigs.csv"
+                  file="classpath:config/liquibase/tenantconfigs.csv"
                   separator=";"
                   tableName="T_TENANTCONFIG"/>
     </changeSet>

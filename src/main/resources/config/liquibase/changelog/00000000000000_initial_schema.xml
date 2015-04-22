@@ -94,7 +94,7 @@
                                  referencedTableName="T_TENANT"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/users.csv"
+                  file="classpath:config/liquibase/users.csv"
                   separator=";"
                   tableName="T_USER">
             <column name="activated" type="boolean"/>
@@ -103,12 +103,12 @@
         <dropDefaultValue tableName="T_USER" columnName="created_date" columnDataType="datetime"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/authorities.csv"
+                  file="classpath:config/liquibase/authorities.csv"
                   separator=";"
                   tableName="T_AUTHORITY"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/users_authorities.csv"
+                  file="classpath:config/liquibase/users_authorities.csv"
                   separator=";"
                   tableName="T_USER_AUTHORITY"/>
 

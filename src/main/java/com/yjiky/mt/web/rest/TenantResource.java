@@ -2,9 +2,18 @@ package com.yjiky.mt.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.yjiky.mt.domain.Tenant;
+import com.yjiky.mt.domain.TenantConfig;
+import com.yjiky.mt.multitenancy.ConnectionProviderFactory;
+import com.yjiky.mt.multitenancy.ConnectionProviderHolder;
+import com.yjiky.mt.multitenancy.SpringLiquibaseUpdater;
+import com.yjiky.mt.repository.TenantConfigRepository;
 import com.yjiky.mt.repository.TenantRepository;
+import liquibase.exception.LiquibaseException;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +37,12 @@ public class TenantResource {
     @Inject
     private TenantRepository tenantRepository;
 
+    @Inject
+    private TenantConfigRepository tenantConfigRepository;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     /**
      * POST  /tenants -> Create a new tenant.
      */
@@ -41,6 +56,22 @@ public class TenantResource {
             return ResponseEntity.badRequest().header("Failure", "A new tenant cannot already have an ID").build();
         }
         tenantRepository.save(tenant);
+
+        List<TenantConfig> configs = tenantConfigRepository.findAll();
+        tenant.setTenantConfig(configs.get(configs.size()-1));
+
+        ConnectionProviderFactory.getInstance().cacheTenant(tenant);
+        ConnectionProviderHolder connectionProviderHolder = ConnectionProviderFactory.getInstance().resolveConnectionProviderForTenant(tenant.getId()+"_"+tenant.getName());
+
+
+        //Liquibase DB Generation
+        SpringLiquibaseUpdater liquibaseUpdater = new SpringLiquibaseUpdater(connectionProviderHolder.dataSource, "classpath:config/liquibase/master.xml", resourceLoader);
+        try {
+            liquibaseUpdater.update();
+        } catch (LiquibaseException e) {
+            e.printStackTrace();
+        }
+
         return ResponseEntity.created(new URI("/api/tenants/" + tenant.getId())).build();
     }
 
