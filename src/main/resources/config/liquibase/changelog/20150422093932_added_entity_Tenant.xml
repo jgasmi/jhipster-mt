@@ -21,7 +21,9 @@
             <column name="db_name" type="varchar(255)"/>
             <column name="db_user_name" type="varchar(255)"/>
             <column name="db_password" type="varchar(255)"/>
-            <column name="is_enabled" type="bit"/>
+            <column name="is_enabled" type="boolean" valueBoolean="false">
+                <constraints nullable="false" />
+            </column>
             <column name="dbtype_id" type="bigint"/>
         </createTable>
 

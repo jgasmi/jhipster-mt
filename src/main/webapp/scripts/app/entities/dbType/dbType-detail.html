@@ -1,0 +1,46 @@
+
+<div>
+    <h2><span translate="mtApp.dbType.detail.title">DbType</span> {{dbType.id}}</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th translate="entity.detail.field">Field</th>
+                    <th translate="entity.detail.value">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <span translate="mtApp.dbType.dbType">DbType</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{dbType.dbType}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="mtApp.dbType.driver">Driver</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{dbType.driver}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="mtApp.dbType.url">Url</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{dbType.url}}" readonly>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button type="submit"
+            ui-sref="dbType"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>

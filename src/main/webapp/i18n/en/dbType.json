@@ -1,0 +1,20 @@
+{
+    "mtApp": {
+        "dbType" : {
+            "home": {
+                "title": "DbTypes",
+                "createLabel": "Create a new DbType",
+                "createOrEditLabel": "Create or edit a DbType"
+            },
+            "delete": {
+                "question": "Are you sure you want to delete DbType {{ id }}?"
+            },
+            "detail": {
+                "title": "DbType"
+            },
+            "dbType": "DbType",
+            "driver": "Driver",
+            "url": "Url"
+        }
+    }
+}

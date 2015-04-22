@@ -1,0 +1,19 @@
+{
+    "mtApp": {
+        "user" : {
+            "home": {
+                "title": "Users",
+                "createLabel": "Créer un nouveau User",
+                "createOrEditLabel": "Créer ou éditer un User"
+            },
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le User {{ id }} ?"
+            },
+            "detail": {
+                "title": "User"
+            },
+            "tenant": "tenant"
+        }
+    }
+}
+

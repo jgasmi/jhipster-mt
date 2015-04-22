@@ -41,7 +41,7 @@ public class Tenant implements Serializable {
     private String dbPassword;
 
     @Column(name = "is_enabled")
-    private Boolean isEnabled;
+    private Boolean isEnabled = false;
 
     @ManyToOne
     private DbType dbtype;

@@ -68,7 +68,7 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
         tenantSettings.putAll(cfgSettings);
 
         String url = getTenantDbUrl(tenant);
-        String driver = "org.postgresql.Driver";
+        String driver = tenant.getDbtype().getDriver();
         String password = tenant.getDbPassword();
         String username = tenant.getDbUserName();
 
@@ -177,7 +177,7 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
     }
 
     protected static String getTenantDbUrl(Tenant tenant) {
-        String url = "jdbc:postgresql://" + tenant.getDbHost() + ":" + tenant.getDbPort();
+        String url = tenant.getDbtype().getUrl() + tenant.getDbHost() + ":" + tenant.getDbPort();
         return tenant.isEnabled() ? url + "/" + tenant.getDbName() : url;
     }
 }

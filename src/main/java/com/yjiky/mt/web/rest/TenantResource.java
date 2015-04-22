@@ -59,8 +59,8 @@ public class TenantResource {
         SpringLiquibaseUpdater liquibaseUpdater = new SpringLiquibaseUpdater(connectionProviderHolder, "classpath:config/liquibase/master.xml", resourceLoader, true);
         try {
             liquibaseUpdater.update();
-
-
+            tenant.setIsEnabled(true);
+            tenantRepository.save(tenant);
         } catch (LiquibaseException e) {
             e.printStackTrace();
         }
