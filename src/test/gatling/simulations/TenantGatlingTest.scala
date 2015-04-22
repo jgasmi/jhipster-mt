@@ -80,7 +80,7 @@ class TenantGatlingTest extends Simulation {
             .exec(http("Create new tenant")
             .put("/api/tenants")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "tenantName":"SAMPLE_TEXT", "dbHost":"SAMPLE_TEXT", "dbPort":"0", "dbName":"SAMPLE_TEXT", "dbUserName":"SAMPLE_TEXT", "dbPassword":"SAMPLE_TEXT"}""")).asJSON
+            .body(StringBody("""{"id":null, "tenantName":"SAMPLE_TEXT", "dbHost":"SAMPLE_TEXT", "dbPort":"0", "dbName":"SAMPLE_TEXT", "dbUserName":"SAMPLE_TEXT", "dbPassword":"SAMPLE_TEXT", "isEnabled":null}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_tenant_url")))
             .pause(10)

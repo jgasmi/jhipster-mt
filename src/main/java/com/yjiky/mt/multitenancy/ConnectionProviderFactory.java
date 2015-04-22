@@ -169,7 +169,7 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
     }
 
     public void cacheTenant(Tenant tenant) {
-        tenantMap.put(tenant.getId()+"_"+tenant.getTenantName(), tenant);
+        tenantMap.put(tenant.getId() + "_" + tenant.getTenantName(), tenant);
     }
 
     public Tenant resolveTenant(String tenantIdentifier) {
@@ -177,6 +177,7 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
     }
 
     protected static String getTenantDbUrl(Tenant tenant) {
-        return "jdbc:postgresql://" + tenant.getDbHost() + ":"+tenant.getDbPort()+"/" + tenant.getDbName();
+        String url = "jdbc:postgresql://" + tenant.getDbHost() + ":" + tenant.getDbPort();
+        return tenant.isEnabled() ? url + "/" + tenant.getDbName() : url;
     }
 }

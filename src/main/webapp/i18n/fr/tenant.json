@@ -18,6 +18,7 @@
             "dbName": "DbName",
             "dbUserName": "DbUserName",
             "dbPassword": "DbPassword",
+            "isEnabled": "IsEnabled",
             "dbtype": "dbtype"
         }
     }

@@ -40,6 +40,9 @@ public class Tenant implements Serializable {
     @Column(name = "db_password")
     private String dbPassword;
 
+    @Column(name = "is_enabled")
+    private Boolean isEnabled;
+
     @ManyToOne
     private DbType dbtype;
 
@@ -99,6 +102,14 @@ public class Tenant implements Serializable {
         this.dbPassword = dbPassword;
     }
 
+    public Boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setIsEnabled(Boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
+
     public DbType getDbtype() {
         return dbtype;
     }
@@ -138,6 +149,7 @@ public class Tenant implements Serializable {
                 ", dbName='" + dbName + "'" +
                 ", dbUserName='" + dbUserName + "'" +
                 ", dbPassword='" + dbPassword + "'" +
+                ", isEnabled='" + isEnabled + "'" +
                 '}';
     }
 }
