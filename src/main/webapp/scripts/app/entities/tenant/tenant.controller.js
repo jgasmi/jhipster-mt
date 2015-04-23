@@ -44,7 +44,7 @@ angular.module('mtApp')
         };
 
         $scope.clear = function () {
-            $scope.tenant = {tenantName: null, dbHost: null, dbPort: null, dbName: null, dbUserName: null, dbPassword: null, isEnabled: false, id: null};
+            $scope.tenant = {tenantName: null, dbHost: null, dbPort: null, dbName: null, dbUserName: null, dbPassword: null, isEnabled: false, hasDatabase: false, hasGeneratedSchema: false, id: null};
             $scope.editForm.$setPristine();
             $scope.editForm.$setUntouched();
         };

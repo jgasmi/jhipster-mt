@@ -11,6 +11,11 @@
         Added the entity Tenant.
     -->
     <changeSet id="20150422093932" author="jhipster">
+        <preConditions onFail="CONTINUE">
+            <customPrecondition className="com.yjiky.mt.multitenancy.MultitenantPrecondition">
+                <param name="tenancy" value="landlord"/>
+            </customPrecondition>
+        </preConditions>
         <createTable tableName="T_TENANT">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -22,6 +27,12 @@
             <column name="db_user_name" type="varchar(255)"/>
             <column name="db_password" type="varchar(255)"/>
             <column name="is_enabled" type="boolean" valueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="has_database" type="boolean" valueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="has_generated_schema" type="boolean" valueBoolean="false">
                 <constraints nullable="false" />
             </column>
             <column name="dbtype_id" type="bigint"/>

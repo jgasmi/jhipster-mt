@@ -11,13 +11,18 @@
         Added the entity Action.
     -->
     <changeSet id="20150324081042" author="jhipster">
+        <preConditions onFail="CONTINUE">
+            <customPrecondition className="com.yjiky.mt.multitenancy.MultitenantPrecondition">
+                <param name="tenancy" value="tenant"/>
+            </customPrecondition>
+        </preConditions>
         <createTable tableName="T_ACTION">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="campaign_id" type="bigint"/>
         </createTable>
-        
+
         <addForeignKeyConstraint baseColumnNames="campaign_id"
                                  baseTableName="T_ACTION"
                                  constraintName="fk_action_campaign_id"

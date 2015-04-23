@@ -16,6 +16,11 @@
         The initial schema has the '00000000000001' id, so that it is over-written if we re-generate it.
     -->
     <changeSet id="00000000000001" author="jhipster">
+        <preConditions onFail="CONTINUE">
+            <customPrecondition className="com.yjiky.mt.multitenancy.MultitenantPrecondition">
+                <param name="tenancy" value="landlord"/>
+            </customPrecondition>
+        </preConditions>
         <createTable tableName="T_USER">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -156,6 +161,11 @@
 
     <!-- Manage the OAuth authentication -->
     <changeSet id="2" author="jhipster">
+        <preConditions onFail="CONTINUE">
+            <customPrecondition className="com.yjiky.mt.multitenancy.MultitenantPrecondition">
+                <param name="tenancy" value="landlord"/>
+            </customPrecondition>
+        </preConditions>
         <createTable tableName="oauth_client_details">
             <column name="client_id" type="VARCHAR(256)">
                 <constraints nullable="false" primaryKey="true"/>

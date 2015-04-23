@@ -11,6 +11,11 @@
         Added the entity DbType.
     -->
     <changeSet id="20150422093500" author="jhipster">
+        <preConditions onFail="CONTINUE">
+            <customPrecondition className="com.yjiky.mt.multitenancy.MultitenantPrecondition">
+                <param name="tenancy" value="landlord"/>
+            </customPrecondition>
+        </preConditions>
         <createTable tableName="T_DBTYPE">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>

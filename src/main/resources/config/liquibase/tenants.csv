@@ -1,3 +1,3 @@
-id;tenant_name;db_name;db_host;db_port;db_user_name;db_password;is_enabled;dbtype_id
-1;landlord;landlorddb;localhost;5432;postgres;postgres;true;1
-2;mars;marsdb;localhost;5432;postgres;postgres;true;1
+id;tenant_name;db_name;db_host;db_port;db_user_name;db_password;is_enabled;has_database;has_generated_schema;dbtype_id
+1;landlord;landlorddb;localhost;5432;postgres;postgres;true;true;true;1
+2;mars;marsdb;localhost;5432;postgres;postgres;true;true;true;1

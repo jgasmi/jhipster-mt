@@ -60,15 +60,17 @@ public class TenantResource {
 
         tenantRepository.save(tenant);
 
-//        if (!tenant.isEnabled()) {
-//            try {
-//                ConnectionProviderFactory.getInstance().createDatabase(tenant);
-//            } catch (SQLException e) {
-//                return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
-//            } catch (ClassNotFoundException e) {
-//                return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
-//            }
-//        }
+        if (!tenant.hasDatabase()) {
+            try {
+                ConnectionProviderFactory.getInstance().createDatabase(tenant);
+                tenant.setHasDatabase(true);
+                tenantRepository.save(tenant);
+            } catch (SQLException e) {
+                return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
+            } catch (ClassNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
+            }
+        }
         ConnectionProviderFactory.getInstance().cacheTenant(tenant);
         ConnectionProviderHolder connectionProviderHolder = ConnectionProviderFactory.getInstance().resolveConnectionProviderForTenant(tenant.getId()+"_"+tenant.getTenantName());
 
@@ -76,7 +78,7 @@ public class TenantResource {
         SpringLiquibaseUpdater liquibaseUpdater = new SpringLiquibaseUpdater(connectionProviderHolder, "classpath:config/liquibase/master.xml", resourceLoader);
         try {
             liquibaseUpdater.update();
-            tenant.setIsEnabled(true);
+            tenant.setHasGeneratedSchema(true);
             tenantRepository.save(tenant);
         } catch (LiquibaseException e) {
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();

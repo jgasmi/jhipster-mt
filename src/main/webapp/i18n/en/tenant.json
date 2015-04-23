@@ -19,6 +19,8 @@
             "dbUserName": "DbUserName",
             "dbPassword": "DbPassword",
             "isEnabled": "IsEnabled",
+            "hasDatabase": "HasDatabase",
+            "hasGeneratedSchema": "HasGeneratedSchema",
             "dbtype": "dbtype"
         }
     }

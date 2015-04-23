@@ -11,6 +11,7 @@
                 "tenantConfig": "TenantConfig",
                 "tenant": "Tenant",
                 "queue": "Queue",
+                "dbType": "DBType",
                 "additionalEntity": "JHipster will add addtional entities"
             },
             "account": {

@@ -41,7 +41,13 @@ public class Tenant implements Serializable {
     private String dbPassword;
 
     @Column(name = "is_enabled")
-    private Boolean isEnabled = false;
+    private Boolean isEnabled;
+
+    @Column(name = "has_database")
+    private Boolean hasDatabase;
+
+    @Column(name = "has_generated_schema")
+    private Boolean hasGeneratedSchema;
 
     @ManyToOne
     private DbType dbtype;
@@ -110,6 +116,22 @@ public class Tenant implements Serializable {
         this.isEnabled = isEnabled;
     }
 
+    public Boolean hasDatabase() {
+        return hasDatabase;
+    }
+
+    public void setHasDatabase(Boolean hasDatabase) {
+        this.hasDatabase = hasDatabase;
+    }
+
+    public Boolean hasGeneratedSchema() {
+        return hasGeneratedSchema;
+    }
+
+    public void setHasGeneratedSchema(Boolean hasGeneratedSchema) {
+        this.hasGeneratedSchema = hasGeneratedSchema;
+    }
+
     public DbType getDbtype() {
         return dbtype;
     }
@@ -150,6 +172,8 @@ public class Tenant implements Serializable {
                 ", dbUserName='" + dbUserName + "'" +
                 ", dbPassword='" + dbPassword + "'" +
                 ", isEnabled='" + isEnabled + "'" +
+                ", hasDatabase='" + hasDatabase + "'" +
+                ", hasGeneratedSchema='" + hasGeneratedSchema + "'" +
                 '}';
     }
 }

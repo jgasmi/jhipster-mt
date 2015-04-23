@@ -32,6 +32,7 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
     private static Map<Object, ConnectionProviderHolder> tenantIdToConnectionProviderHolderMap = null;
     private static Map<Object, ConnectionProvider> tenantIdToConnectionProviderMap = null;
     private static Map<String, Tenant> tenantMap = new ConcurrentHashMap<>();
+    private static Map<String, Tenant> dbTenantMap = new ConcurrentHashMap<>();
 
     private Map cfgSettings;
     private ConnectionProvider defaultConnectionProvider;
@@ -159,6 +160,10 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
         }
     }
 
+    public Tenant fetchTenantByDbUrl(String url) {
+        return dbTenantMap.get(url);
+    }
+
     @Override
     public Map<Object, ConnectionProvider> fetchConfiguredTenantConnectionProvider() {
         return tenantIdToConnectionProviderMap;
@@ -181,7 +186,7 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
 
     protected String getTenantDbUrl(Tenant tenant) {
         String url = tenant.getDbtype().getUrl() + tenant.getDbHost() + ":" + tenant.getDbPort() + "/";
-        return tenant.isEnabled() ? url + tenant.getDbName() : url;
+        return tenant.hasDatabase() ? url + tenant.getDbName() : url;
     }
 
     private Connection getDummyConnection(Tenant tenant) throws SQLException, ClassNotFoundException {
@@ -189,11 +194,14 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
         return DriverManager.getConnection(getTenantDbUrl(tenant), tenant.getDbUserName(), tenant.getDbPassword());
     }
 
-    public boolean createDatabase (Tenant tenant) throws SQLException, ClassNotFoundException {
+    public boolean createDatabase(Tenant tenant) throws SQLException, ClassNotFoundException {
         Connection connection = getDummyConnection(tenant);
         PreparedStatement statement = connection.prepareStatement("CREATE DATABASE  " + tenant.getDbName());
         boolean result = statement.execute();
+
+        tenant.setHasDatabase(true);
+        dbTenantMap.put(getTenantDbUrl(tenant), tenant);
         connection.close();
-        return  result;
+        return result;
     }
 }

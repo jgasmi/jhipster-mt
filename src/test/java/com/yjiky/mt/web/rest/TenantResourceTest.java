@@ -55,6 +55,12 @@ public class TenantResourceTest {
     private static final Boolean DEFAULT_IS_ENABLED = false;
     private static final Boolean UPDATED_IS_ENABLED = true;
 
+    private static final Boolean DEFAULT_HAS_DATABASE = false;
+    private static final Boolean UPDATED_HAS_DATABASE = true;
+
+    private static final Boolean DEFAULT_HAS_GENERATED_SCHEMA = false;
+    private static final Boolean UPDATED_HAS_GENERATED_SCHEMA = true;
+
     @Inject
     private TenantRepository tenantRepository;
 
@@ -80,6 +86,8 @@ public class TenantResourceTest {
         tenant.setDbUserName(DEFAULT_DB_USER_NAME);
         tenant.setDbPassword(DEFAULT_DB_PASSWORD);
         tenant.setIsEnabled(DEFAULT_IS_ENABLED);
+        tenant.setHasDatabase(DEFAULT_HAS_DATABASE);
+        tenant.setHasGeneratedSchema(DEFAULT_HAS_GENERATED_SCHEMA);
     }
 
     @Test
@@ -104,6 +112,8 @@ public class TenantResourceTest {
         assertThat(testTenant.getDbUserName()).isEqualTo(DEFAULT_DB_USER_NAME);
         assertThat(testTenant.getDbPassword()).isEqualTo(DEFAULT_DB_PASSWORD);
         assertThat(testTenant.isEnabled()).isEqualTo(DEFAULT_IS_ENABLED);
+        assertThat(testTenant.hasDatabase()).isEqualTo(DEFAULT_HAS_DATABASE);
+        assertThat(testTenant.hasGeneratedSchema()).isEqualTo(DEFAULT_HAS_GENERATED_SCHEMA);
     }
 
     @Test
@@ -123,7 +133,9 @@ public class TenantResourceTest {
                 .andExpect(jsonPath("$.[*].dbName").value(hasItem(DEFAULT_DB_NAME.toString())))
                 .andExpect(jsonPath("$.[*].dbUserName").value(hasItem(DEFAULT_DB_USER_NAME.toString())))
                 .andExpect(jsonPath("$.[*].dbPassword").value(hasItem(DEFAULT_DB_PASSWORD.toString())))
-                .andExpect(jsonPath("$.[*].isEnabled").value(hasItem(DEFAULT_IS_ENABLED.booleanValue())));
+                .andExpect(jsonPath("$.[*].isEnabled").value(hasItem(DEFAULT_IS_ENABLED.booleanValue())))
+                .andExpect(jsonPath("$.[*].hasDatabase").value(hasItem(DEFAULT_HAS_DATABASE.booleanValue())))
+                .andExpect(jsonPath("$.[*].hasGeneratedSchema").value(hasItem(DEFAULT_HAS_GENERATED_SCHEMA.booleanValue())));
     }
 
     @Test
@@ -143,7 +155,9 @@ public class TenantResourceTest {
             .andExpect(jsonPath("$.dbName").value(DEFAULT_DB_NAME.toString()))
             .andExpect(jsonPath("$.dbUserName").value(DEFAULT_DB_USER_NAME.toString()))
             .andExpect(jsonPath("$.dbPassword").value(DEFAULT_DB_PASSWORD.toString()))
-            .andExpect(jsonPath("$.isEnabled").value(DEFAULT_IS_ENABLED.booleanValue()));
+            .andExpect(jsonPath("$.isEnabled").value(DEFAULT_IS_ENABLED.booleanValue()))
+            .andExpect(jsonPath("$.hasDatabase").value(DEFAULT_HAS_DATABASE.booleanValue()))
+            .andExpect(jsonPath("$.hasGeneratedSchema").value(DEFAULT_HAS_GENERATED_SCHEMA.booleanValue()));
     }
 
     @Test
@@ -170,6 +184,8 @@ public class TenantResourceTest {
         tenant.setDbUserName(UPDATED_DB_USER_NAME);
         tenant.setDbPassword(UPDATED_DB_PASSWORD);
         tenant.setIsEnabled(UPDATED_IS_ENABLED);
+        tenant.setHasDatabase(UPDATED_HAS_DATABASE);
+        tenant.setHasGeneratedSchema(UPDATED_HAS_GENERATED_SCHEMA);
         restTenantMockMvc.perform(put("/api/tenants")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(tenant)))
@@ -186,6 +202,8 @@ public class TenantResourceTest {
         assertThat(testTenant.getDbUserName()).isEqualTo(UPDATED_DB_USER_NAME);
         assertThat(testTenant.getDbPassword()).isEqualTo(UPDATED_DB_PASSWORD);
         assertThat(testTenant.isEnabled()).isEqualTo(UPDATED_IS_ENABLED);
+        assertThat(testTenant.hasDatabase()).isEqualTo(UPDATED_HAS_DATABASE);
+        assertThat(testTenant.hasGeneratedSchema()).isEqualTo(UPDATED_HAS_GENERATED_SCHEMA);
     }
 
     @Test
