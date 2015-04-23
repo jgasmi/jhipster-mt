@@ -14,7 +14,10 @@ import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -176,8 +179,21 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
         return tenantMap.get(tenantIdentifier);
     }
 
-    protected static String getTenantDbUrl(Tenant tenant) {
-        String url = tenant.getDbtype().getUrl() + tenant.getDbHost() + ":" + tenant.getDbPort();
-        return tenant.isEnabled() ? url + "/" + tenant.getDbName() : url;
+    protected String getTenantDbUrl(Tenant tenant) {
+        String url = tenant.getDbtype().getUrl() + tenant.getDbHost() + ":" + tenant.getDbPort() + "/";
+        return tenant.isEnabled() ? url + tenant.getDbName() : url;
+    }
+
+    private Connection getDummyConnection(Tenant tenant) throws SQLException, ClassNotFoundException {
+        Class.forName(tenant.getDbtype().getDriver());
+        return DriverManager.getConnection(getTenantDbUrl(tenant), tenant.getDbUserName(), tenant.getDbPassword());
+    }
+
+    public boolean createDatabase (Tenant tenant) throws SQLException, ClassNotFoundException {
+        Connection connection = getDummyConnection(tenant);
+        PreparedStatement statement = connection.prepareStatement("CREATE DATABASE  " + tenant.getDbName());
+        boolean result = statement.execute();
+        connection.close();
+        return  result;
     }
 }

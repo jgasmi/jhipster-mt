@@ -73,6 +73,22 @@
             "fieldNameCapitalized": "IsEnabled",
             "fieldNameUnderscored": "is_enabled",
             "fieldValidate": false
+        },
+        {
+            "fieldId": 8,
+            "fieldName": "hasDatabase",
+            "fieldType": "Boolean",
+            "fieldNameCapitalized": "HasDatabase",
+            "fieldNameUnderscored": "has_database",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 9,
+            "fieldName": "hasGeneratedSchema",
+            "fieldType": "Boolean",
+            "fieldNameCapitalized": "HasGeneratedSchema",
+            "fieldNameUnderscored": "has_generated_schema",
+            "fieldValidate": false
         }
     ],
     "fieldsContainOwnerManyToMany": false,

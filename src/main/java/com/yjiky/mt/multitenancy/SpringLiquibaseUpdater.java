@@ -1,5 +1,6 @@
 package com.yjiky.mt.multitenancy;
 
+import com.yjiky.mt.domain.Tenant;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -71,14 +72,11 @@ public class SpringLiquibaseUpdater {
     private String changeLogTableName;
     private String changeLogLockTableName;
 
-    private boolean isNewTenant = false;
-
-    public SpringLiquibaseUpdater(ConnectionProviderHolder connectionProviderHolder, String changeLog, ResourceLoader resourceLoader, boolean isNewTenant) {
+    public SpringLiquibaseUpdater(ConnectionProviderHolder connectionProviderHolder, String changeLog, ResourceLoader resourceLoader) {
         super();
         this.connectionProviderHolder = connectionProviderHolder;
         this.changeLog = changeLog;
         this.resourceLoader = resourceLoader;
-        this.isNewTenant = isNewTenant;
     }
 
     public boolean isDropFirst() {
@@ -155,10 +153,6 @@ public class SpringLiquibaseUpdater {
         Liquibase liquibase = null;
         try {
             connection = getConnectionProvider().getConnection();
-            if (isNewTenant) {
-                PreparedStatement statement = connection.prepareStatement("CREATE DATABASE IF NOT EXISTS " + connectionProviderHolder.dbName);
-                statement.execute();
-            }
             liquibase = createLiquibase(connection);
             liquibase.update("development, production");
         } catch (SQLException e) {

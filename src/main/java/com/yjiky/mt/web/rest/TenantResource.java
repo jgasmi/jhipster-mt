@@ -1,10 +1,12 @@
 package com.yjiky.mt.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.yjiky.mt.domain.DbType;
 import com.yjiky.mt.domain.Tenant;
 import com.yjiky.mt.multitenancy.ConnectionProviderFactory;
 import com.yjiky.mt.multitenancy.ConnectionProviderHolder;
 import com.yjiky.mt.multitenancy.SpringLiquibaseUpdater;
+import com.yjiky.mt.repository.DbTypeRepository;
 import com.yjiky.mt.repository.TenantRepository;
 import liquibase.exception.LiquibaseException;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +36,9 @@ public class TenantResource {
 
     @Inject
     private TenantRepository tenantRepository;
+
+    @Inject
+    private DbTypeRepository dbTypeRepository;
 
     @Autowired
     private ResourceLoader resourceLoader;
@@ -49,20 +55,31 @@ public class TenantResource {
         if (tenant.getId() != null) {
             return ResponseEntity.badRequest().header("Failure", "A new tenant cannot already have an ID").build();
         }
+        DbType dbType = dbTypeRepository.findOne(tenant.getDbtype().getId());
+        tenant.setDbtype(dbType);
+
         tenantRepository.save(tenant);
 
+//        if (!tenant.isEnabled()) {
+//            try {
+//                ConnectionProviderFactory.getInstance().createDatabase(tenant);
+//            } catch (SQLException e) {
+//                return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
+//            } catch (ClassNotFoundException e) {
+//                return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
+//            }
+//        }
         ConnectionProviderFactory.getInstance().cacheTenant(tenant);
         ConnectionProviderHolder connectionProviderHolder = ConnectionProviderFactory.getInstance().resolveConnectionProviderForTenant(tenant.getId()+"_"+tenant.getTenantName());
 
-
         //Liquibase DB Generation
-        SpringLiquibaseUpdater liquibaseUpdater = new SpringLiquibaseUpdater(connectionProviderHolder, "classpath:config/liquibase/master.xml", resourceLoader, true);
+        SpringLiquibaseUpdater liquibaseUpdater = new SpringLiquibaseUpdater(connectionProviderHolder, "classpath:config/liquibase/master.xml", resourceLoader);
         try {
             liquibaseUpdater.update();
             tenant.setIsEnabled(true);
             tenantRepository.save(tenant);
         } catch (LiquibaseException e) {
-            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
         }
 
         return ResponseEntity.created(new URI("/api/tenants/" + tenant.getId())).build();
