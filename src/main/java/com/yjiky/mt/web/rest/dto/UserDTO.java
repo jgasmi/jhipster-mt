@@ -31,7 +31,7 @@ public class UserDTO {
     @Size(min = 2, max = 5)
     private String langKey;
 
-    private String tenant;
+    private TenantDTO tenant;
 
     private List<String> roles;
 
@@ -39,7 +39,7 @@ public class UserDTO {
     }
 
     public UserDTO(String login, String password, String firstName, String lastName, String email, String langKey,
-                   List<String> roles, String tenant) {
+                   List<String> roles, TenantDTO tenant) {
         this.login = login;
         this.password = password;
         this.firstName = firstName;
@@ -50,7 +50,7 @@ public class UserDTO {
         this.tenant = tenant;
     }
 
-    public String getTenant() {
+    public TenantDTO getTenant() {
         return tenant;
     }
 

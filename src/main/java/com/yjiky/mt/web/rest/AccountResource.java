@@ -1,6 +1,7 @@
 package com.yjiky.mt.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.yjiky.mt.multitenancy.CustomUserDetails;
 import com.yjiky.mt.service.UserService;
 import com.yjiky.mt.domain.Authority;
 import com.yjiky.mt.domain.User;
@@ -8,6 +9,7 @@ import com.yjiky.mt.repository.UserRepository;
 import com.yjiky.mt.security.SecurityUtils;
 import com.yjiky.mt.service.MailService;
 import com.yjiky.mt.service.UserService;
+import com.yjiky.mt.web.rest.dto.TenantDTO;
 import com.yjiky.mt.web.rest.dto.UserDTO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,7 +62,7 @@ public class AccountResource {
                 .orElseGet(() -> {
                     User user = userService.createUserInformation(userDTO.getLogin(), userDTO.getPassword(),
                     userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail().toLowerCase(),
-                    userDTO.getLangKey());
+                    userDTO.getLangKey(), userDTO.getTenant().getId());
                     String baseUrl = request.getScheme() + // "http"
                     "://" +                                // "://"
                     request.getServerName() +              // "myhost"
@@ -102,9 +106,10 @@ public class AccountResource {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<UserDTO> getAccount() {
-        return Optional.ofNullable(userService.getUserWithAuthorities())
-            .map(user -> new ResponseEntity<>(
+    public ResponseEntity<UserDTO> getAccount(Principal principal) {
+        User user = ( (CustomUserDetails)((OAuth2Authentication)principal).getPrincipal()).getUser();
+        TenantDTO tenantDTO = new TenantDTO(user.getTenant().getId(), user.getTenant().getTenantName());
+        return new ResponseEntity<>(
                 new UserDTO(
                     user.getLogin(),
                     null,
@@ -113,9 +118,8 @@ public class AccountResource {
                     user.getEmail(),
                     user.getLangKey(),
                     user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toCollection(LinkedList::new)),
-                    user.getTenant().getTenantName()),
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+                    tenantDTO),
+                HttpStatus.OK);
     }
 
     /**

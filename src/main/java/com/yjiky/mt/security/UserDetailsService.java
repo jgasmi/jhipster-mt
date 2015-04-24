@@ -1,7 +1,10 @@
 package com.yjiky.mt.security;
 
 import com.yjiky.mt.domain.Authority;
+import com.yjiky.mt.domain.Tenant;
 import com.yjiky.mt.domain.User;
+import com.yjiky.mt.multitenancy.ConnectionProviderFactory;
+import com.yjiky.mt.multitenancy.ConnectionProviderHolder;
 import com.yjiky.mt.multitenancy.CustomUserDetails;
 import com.yjiky.mt.repository.UserRepository;
 import org.slf4j.Logger;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;

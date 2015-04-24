@@ -9,7 +9,7 @@
 
             <div ng-switch="isAuthenticated()">
                 <div class="alert alert-success" ng-switch-when="true"
-                     translate="main.logged.message" translate-values="{username: '{{account.login}}', tenantname: '{{account.tenant}}'}">
+                     translate="main.logged.message" translate-values="{username: '{{account.login}}', tenantname: '{{account.tenant.name}}'}">
                     You are logged in as user "Admin".
                 </div>
 

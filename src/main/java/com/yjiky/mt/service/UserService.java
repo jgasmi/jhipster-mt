@@ -1,6 +1,8 @@
 package com.yjiky.mt.service;
 
+import com.yjiky.mt.domain.Tenant;
 import com.yjiky.mt.repository.AuthorityRepository;
+import com.yjiky.mt.repository.TenantRepository;
 import com.yjiky.mt.service.util.RandomUtil;
 import com.yjiky.mt.domain.Authority;
 import com.yjiky.mt.domain.User;
@@ -39,6 +41,9 @@ public class UserService {
     private UserRepository userRepository;
 
     @Inject
+    private TenantRepository tenantRepository;
+
+    @Inject
     private AuthorityRepository authorityRepository;
 
     public Optional<User> activateRegistration(String key) {
@@ -56,7 +61,7 @@ public class UserService {
     }
 
     public User createUserInformation(String login, String password, String firstName, String lastName, String email,
-                                      String langKey) {
+                                      String langKey, Long tenantId) {
         User newUser = new User();
         Authority authority = authorityRepository.findOne("ROLE_USER");
         Set<Authority> authorities = new HashSet<>();
@@ -74,6 +79,10 @@ public class UserService {
         newUser.setActivationKey(RandomUtil.generateActivationKey());
         authorities.add(authority);
         newUser.setAuthorities(authorities);
+
+        Tenant tenant = tenantRepository.findOne(tenantId);
+        newUser.setTenant(tenant);
+
         userRepository.save(newUser);
         log.debug("Created Information for User: {}", newUser);
         return newUser;

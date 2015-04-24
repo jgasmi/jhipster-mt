@@ -8,6 +8,7 @@ import com.yjiky.mt.repository.UserRepository;
 import com.yjiky.mt.security.AuthoritiesConstants;
 import com.yjiky.mt.service.MailService;
 import com.yjiky.mt.service.UserService;
+import com.yjiky.mt.web.rest.dto.TenantDTO;
 import com.yjiky.mt.web.rest.dto.UserDTO;
 import org.junit.Before;
 import org.junit.Test;
@@ -146,6 +147,7 @@ public class AccountResourceTest {
     @Test
     @Transactional
     public void testRegisterValid() throws Exception {
+        TenantDTO t = new TenantDTO(1l,"mars");
         UserDTO u = new UserDTO(
             "joe",                  // login
             "password",             // password
@@ -153,7 +155,8 @@ public class AccountResourceTest {
             "Shmoe",                // lastName
             "joe@example.com",      // e-mail
             "en",                   // langKey
-            Arrays.asList(AuthoritiesConstants.USER),"landlord"
+            Arrays.asList(AuthoritiesConstants.USER),
+            t
         );
 
         restMvc.perform(
@@ -169,6 +172,7 @@ public class AccountResourceTest {
     @Test
     @Transactional
     public void testRegisterInvalidLogin() throws Exception {
+        TenantDTO t = new TenantDTO(1l,"mars");
         UserDTO u = new UserDTO(
             "funky-log!n",          // login <-- invalid
             "password",             // password
@@ -176,7 +180,8 @@ public class AccountResourceTest {
             "One",                  // lastName
             "funky@example.com",    // e-mail
             "en",                   // langKey
-            Arrays.asList(AuthoritiesConstants.USER),"landlord"
+            Arrays.asList(AuthoritiesConstants.USER),
+            t
         );
 
         restUserMockMvc.perform(
@@ -192,6 +197,7 @@ public class AccountResourceTest {
     @Test
     @Transactional
     public void testRegisterInvalidEmail() throws Exception {
+        TenantDTO t = new TenantDTO(1l,"mars");
         UserDTO u = new UserDTO(
             "bob",              // login
             "password",         // password
@@ -199,7 +205,8 @@ public class AccountResourceTest {
             "Green",            // lastName
             "invalid",          // e-mail <-- invalid
             "en",               // langKey
-            Arrays.asList(AuthoritiesConstants.USER),"landlord"
+            Arrays.asList(AuthoritiesConstants.USER),
+            t
         );
 
         restUserMockMvc.perform(
@@ -215,6 +222,7 @@ public class AccountResourceTest {
     @Test
     @Transactional
     public void testRegisterDuplicateLogin() throws Exception {
+        TenantDTO t = new TenantDTO(1l,"mars");
         // Good
         UserDTO u = new UserDTO(
             "alice",                // login
@@ -223,12 +231,13 @@ public class AccountResourceTest {
             "Something",            // lastName
             "alice@example.com",    // e-mail
             "en",                   // langKey
-            Arrays.asList(AuthoritiesConstants.USER),"landlord"
+            Arrays.asList(AuthoritiesConstants.USER),
+            t
         );
 
         // Duplicate login, different e-mail
         UserDTO dup = new UserDTO(u.getLogin(), u.getPassword(), u.getLogin(), u.getLastName(),
-            "alicejr@example.com", u.getLangKey(), u.getRoles(),"landlord");
+            "alicejr@example.com", u.getLangKey(), u.getRoles(),t);
 
         // Good user
         restMvc.perform(
@@ -251,6 +260,7 @@ public class AccountResourceTest {
     @Test
     @Transactional
     public void testRegisterDuplicateEmail() throws Exception {
+        TenantDTO t = new TenantDTO(1l,"mars");
         // Good
         UserDTO u = new UserDTO(
             "john",                 // login
@@ -259,12 +269,13 @@ public class AccountResourceTest {
             "Doe",                  // lastName
             "john@example.com",     // e-mail
             "en",                   // langKey
-            Arrays.asList(AuthoritiesConstants.USER),"landlord"
+            Arrays.asList(AuthoritiesConstants.USER),
+            t
         );
 
         // Duplicate e-mail, different login
         UserDTO dup = new UserDTO("johnjr", u.getPassword(), u.getLogin(), u.getLastName(),
-            u.getEmail(), u.getLangKey(), u.getRoles(),"landlord");
+            u.getEmail(), u.getLangKey(), u.getRoles(), t);
 
         // Good user
         restMvc.perform(
@@ -287,6 +298,7 @@ public class AccountResourceTest {
     @Test
     @Transactional
     public void testRegisterAdminIsIgnored() throws Exception {
+        TenantDTO t = new TenantDTO(1l,"mars");
         UserDTO u = new UserDTO(
             "badguy",               // login
             "password",             // password
@@ -295,7 +307,7 @@ public class AccountResourceTest {
             "badguy@example.com",   // e-mail
             "en",                   // langKey
             Arrays.asList(AuthoritiesConstants.ADMIN), // <-- only admin should be able to do that
-            "landlord"
+            t
         );
 
         restMvc.perform(
