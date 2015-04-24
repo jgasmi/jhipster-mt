@@ -86,7 +86,6 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
 
         tenantSettings.remove(Environment.DRIVER);
         tenantSettings.put(Environment.DRIVER, driver);
-        // TODO For now only a single dialect is supported for all the tenants
         tenantSettings.remove(Environment.URL);
         tenantSettings.put(Environment.URL, url);
         tenantSettings.remove(Environment.PASS);
@@ -106,7 +105,7 @@ public class ConnectionProviderFactory implements ITenantAwareConnectionProvider
 
         landlordSettings.remove(Environment.DRIVER);
         landlordSettings.put(Environment.DRIVER, driver);
-        // TODO For now only a single dialect is supported for all the tenants
+        // TODO For now only a single dialect is supported for Landlord
         landlordSettings.remove(Environment.URL);
         landlordSettings.put(Environment.URL, "jdbc:postgresql://" + properties.getProperty("serverName") + ":5432/" + properties.getProperty("databaseName"));
         landlordSettings.remove(Environment.PASS);
